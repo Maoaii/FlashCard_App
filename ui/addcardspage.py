@@ -56,7 +56,7 @@ class AddCardsPage(tk.Frame):
         # Back button
         back_button = tk.Button(self,
                                 text="Back",
-                                command= lambda: controller.show_frame("HomePage"))
+                                command= lambda: self.back_button_clicked())
         back_button.pack(pady=2)
     
     def add_new_card(self, card_title, card_reading, card_meaning, card_type):
@@ -68,5 +68,13 @@ class AddCardsPage(tk.Frame):
             messagebox.showerror(title="Card already exists", message="Card already exists")
         else:
             messagebox.showinfo(title="Card added succesfully!", message="Card added succesfully!")
-        
+    
+    def back_button_clicked(self):
+        self.clear_entries()
+        self.controller.show_frame("HomePage")
+    
+    def clear_entries(self):
+        for entry in self.winfo_children():
+            if isinstance(entry, tk.Entry):
+                entry.delete(0, "end")
         

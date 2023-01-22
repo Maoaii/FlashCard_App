@@ -77,8 +77,11 @@ class FlashcardApp(tk.Tk):
         with open(DATA_PATH, "r") as data_file:
             data = json.load(data_file)
         
+        for card in data["cards"]:
+            if card_title in card:
+                return True
         
-        pass
+        return False
     
     def check_answer(self, card, answer) -> bool:
         pass 
