@@ -1,0 +1,2 @@
+class CardAlreadyExistsError(Exception):
+    pass

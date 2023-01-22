@@ -1,0 +1,2 @@
+class MissingInfoError(Exception):
+    pass

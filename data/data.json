@@ -1,0 +1,20 @@
+{
+    "cards": [
+        {
+            "に": {
+                "type": "Kanji",
+                "reading": "ni",
+                "meaning": "two",
+                "level": 1
+            }
+        },
+        {
+            "一": {
+                "type": "Kanji",
+                "reading": "ichi",
+                "meaning": "one",
+                "level": 1
+            }
+        }
+    ]
+}
