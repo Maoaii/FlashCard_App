@@ -1,4 +1,6 @@
 import tkinter as tk
+from tkinter import messagebox
+from exceptions.WrongAnswerError import WrongAnswerError
 
 class ReviewPage(tk.Frame):
     def __init__(self, parent, controller) -> None:
@@ -23,7 +25,8 @@ class ReviewPage(tk.Frame):
         card_answer_entry.pack()
         
         # Submit answer button
-        add_card_button = tk.Button(self, text="Submit answer")
+        add_card_button = tk.Button(self, text="Submit answer",
+                                    command= lambda: self.submit_answer())
         add_card_button.pack()
         
         # Back button
@@ -31,3 +34,10 @@ class ReviewPage(tk.Frame):
                                 text="Back",
                                 command= lambda: controller.show_frame("HomePage"))
         back_button.pack()
+    
+    
+    def submit_answer(self):
+        try:
+            self.controller.submit_answer(self.card_answer_entry.get())
+        except WrongAnswerError:
+            messagebox.showerror(title="Wrong answer", message="Wrong answer")

@@ -4,6 +4,7 @@ import time
 import tkinter as tk
 from exceptions.CardAlreadyExistsError import CardAlreadyExistsError
 from exceptions.MissingInfoError import MissingInfoError
+from exceptions.WrongAnswerError import WrongAnswerError
 from tkinter import font as tkfont
 from ui.homepage import HomePage
 from ui.reviewpage import ReviewPage
@@ -19,6 +20,7 @@ class FlashcardApp(tk.Tk):
         
         # Set up current cards
         self.current_card = self.setup_card()
+        self.current_review = []
         
         self.window = tk.Tk.__init__(self, *args, **kwargs)
         
@@ -95,8 +97,31 @@ class FlashcardApp(tk.Tk):
                 return True
         
         return False
+
     
-    def check_answer(self, card, answer) -> bool:
+    def start_new_review(self):
+        # Create a copy of all the cards up for review
+        with open(DATA_PATH, "r") as data_file:
+            self.current_review = json.load(data_file)["cards"]
+        
+    
+    def submit_answer(self, answer):
+        if self.check_answer:
+            # Remove deck from card
+            
+            
+            # Get new card
+            self.current_card = random.choice(self.current_review)
+            
+            return
+        
+        # Get new card
+        self.current_card = random.choice(self.current_review)
+
+        raise WrongAnswerError()
+    
+    
+    def check_answer(self, answer) -> bool:
         if answer in self.current_card.get():
             return True
         
