@@ -1,4 +1,6 @@
 import json
+import random
+import time
 import tkinter as tk
 from exceptions.CardAlreadyExistsError import CardAlreadyExistsError
 from exceptions.MissingInfoError import MissingInfoError
@@ -12,10 +14,12 @@ APP_NAME: str = "Flashcard App"
 DATA_PATH: str = "./data/data.json"
 
 class FlashcardApp(tk.Tk):
-    
-    
-    
     def __init__(self, *args, **kwargs) -> None:
+        random.seed(round(time.time() * 100))
+        
+        # Set up current cards
+        self.current_card = self.setup_card()
+        
         self.window = tk.Tk.__init__(self, *args, **kwargs)
         
         # Setting up the window
@@ -42,10 +46,19 @@ class FlashcardApp(tk.Tk):
         
         self.show_frame(HomePage.__name__)
         
+        
     def show_frame(self, page_name):
         # Raise the frame we want to the front
         frame = self.frames[page_name]
         frame.tkraise()
+    
+    
+    def setup_card(self):
+        with open(DATA_PATH, "r") as data_file:
+            data = json.load(data_file)
+        
+        return random.choice(data["cards"])
+    
     
     def add_card(self, card_title, card_reading, card_meaning, card_type):
         if not card_title or not card_reading or not card_meaning or not card_type:
@@ -84,10 +97,15 @@ class FlashcardApp(tk.Tk):
         return False
     
     def check_answer(self, card, answer) -> bool:
-        pass 
+        if answer in self.current_card.get():
+            return True
+        
+        return False
     
     def get_card(self) -> dict:
-        pass
+        for key, value in self.current_card.items():
+            card_title = key
+        return card_title
     
     def quit_app(self):
         self.quit()

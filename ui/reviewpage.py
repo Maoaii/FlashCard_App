@@ -14,7 +14,7 @@ class ReviewPage(tk.Frame):
         
         # Card title setup
         card_title_label = tk.Label(self,
-                                    text="XXX",
+                                    text=self.controller.get_card(),
                                     pady=20)
         card_title_label.pack()
         
