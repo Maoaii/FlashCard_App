@@ -1,0 +1,2 @@
+class WrongAnswerError(Exception):
+    pass
