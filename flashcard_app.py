@@ -2,6 +2,7 @@ import json
 import random
 import time
 import tkinter as tk
+from typing import Dict
 from exceptions.CardAlreadyExistsError import CardAlreadyExistsError
 from exceptions.MissingInfoError import MissingInfoError
 from exceptions.WrongAnswerError import WrongAnswerError
@@ -9,18 +10,23 @@ from tkinter import font as tkfont
 from ui.homepage import HomePage
 from ui.reviewpage import ReviewPage
 from ui.addcardspage import AddCardsPage
+from card_review import CardReview
 
 AVAILABLE_FRAMES = (HomePage, ReviewPage, AddCardsPage)
 APP_NAME: str = "Flashcard App"
 DATA_PATH: str = "./data/data.json"
+READING_REVIEW = "reading"
+MEANING_REVIEW = "meaning"
 
 class FlashcardApp(tk.Tk):
     def __init__(self, *args, **kwargs) -> None:
-        random.seed(round(time.time() * 100))
+        # Seed the random generator
+        random.seed()
         
         # Set up current cards
-        self.current_card = self.setup_card()
-        self.current_review = []
+        self.current_review: Dict[CardReview] = []
+        self.current_card: CardReview = None
+        self.start_new_review()
         
         self.window = tk.Tk.__init__(self, *args, **kwargs)
         
@@ -55,13 +61,6 @@ class FlashcardApp(tk.Tk):
         frame.tkraise()
     
     
-    def setup_card(self):
-        with open(DATA_PATH, "r") as data_file:
-            data = json.load(data_file)
-        
-        return random.choice(data["cards"])
-    
-    
     def add_card(self, card_title, card_reading, card_meaning, card_type):
         if not card_title or not card_reading or not card_meaning or not card_type:
             raise MissingInfoError()
@@ -88,6 +87,7 @@ class FlashcardApp(tk.Tk):
             json_string = json.dumps(data, ensure_ascii=False, indent=4)
             data_file.write(json_string)
     
+    
     def card_already_exists(self, card_title) -> bool:
         with open(DATA_PATH, "r") as data_file:
             data = json.load(data_file)
@@ -101,36 +101,50 @@ class FlashcardApp(tk.Tk):
     
     def start_new_review(self):
         # Create a copy of all the cards up for review
+        # TODO: currently, all cards are up for review
         with open(DATA_PATH, "r") as data_file:
-            self.current_review = json.load(data_file)["cards"]
+            all_cards = json.load(data_file)["cards"]
         
+        # Create reviews for readings and for meanings
+        # TODO: There has to be a better way of doing this
+        for card in all_cards:
+            card_question = list(card.keys())[0]
+            card_reading = list(card.values())[0][READING_REVIEW]
+            card_meaning = list(card.values())[0][MEANING_REVIEW]
+            self.current_review.append(CardReview(card_question, card_reading, READING_REVIEW))
+            self.current_review.append(CardReview(card_question, card_meaning, MEANING_REVIEW))
+        
+        self.setup_card()
+    
+        
+    def setup_card(self):
+        self.current_card = random.choice(self.current_review)
+    
     
     def submit_answer(self, answer):
-        if self.check_answer:
-            # Remove deck from card
-            
-            
-            # Get new card
+        if not answer:
+            raise MissingInfoError()
+        
+        if not self.check_answer(answer):
+            # Setup new card
             self.current_card = random.choice(self.current_review)
             
-            return
+            raise WrongAnswerError()
         
-        # Get new card
-        self.current_card = random.choice(self.current_review)
-
-        raise WrongAnswerError()
-    
+        # Remove card from deck
+        self.current_review.remove(self.current_card)
+        
+        # Setup new card
+        self.setup_card()
+        
     
     def check_answer(self, answer) -> bool:
-        if answer in self.current_card.get():
-            return True
-        
-        return False
+        return self.current_card.get_answer() == answer
     
-    def get_card(self) -> dict:
-        for key, value in self.current_card.items():
-            card_title = key
-        return card_title
+    
+    def get_card(self) -> CardReview:
+        return self.current_card
+    
     
     def quit_app(self):
         self.quit()

@@ -3,7 +3,7 @@
         {
             "に": {
                 "type": "Kanji",
-                "reading": "ni",
+                "reading": "に",
                 "meaning": "two",
                 "level": 1
             }
@@ -11,8 +11,16 @@
         {
             "一": {
                 "type": "Kanji",
-                "reading": "ichi",
+                "reading": "いち",
                 "meaning": "one",
+                "level": 1
+            }
+        },
+        {
+            "三": {
+                "type": "Kanji",
+                "reading": "さん",
+                "meaning": "three",
                 "level": 1
             }
         }
