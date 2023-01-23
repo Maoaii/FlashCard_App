@@ -138,8 +138,8 @@ class FlashcardApp(tk.Tk):
         self.setup_card()
         
     
-    def check_answer(self, answer) -> bool:
-        return self.current_card.get_answer() == answer
+    def check_answer(self, answer: str) -> bool:
+        return answer.casefold() == self.current_card.answer.casefold()
     
     
     def get_card(self) -> CardReview:
