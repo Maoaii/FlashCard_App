@@ -1,6 +1,6 @@
 import json
 import random
-import time
+import pickle
 import tkinter as tk
 from typing import Dict
 from exceptions.CardAlreadyExistsError import CardAlreadyExistsError
