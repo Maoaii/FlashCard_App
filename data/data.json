@@ -6,7 +6,7 @@
             "reading": "に, ni",
             "meaning": "two",
             "level": 1,
-            "next_review": 0,
+            "next_review": "01/26/23"
         },
         {
             "title": "一",
@@ -14,19 +14,7 @@
             "reading": "いち, ichi",
             "meaning": "one",
             "level": 1,
-            "next_review": 0,
-        }
-    ],
-    "reviews": [
-        {
-            "title": "に",
-            "reading": "に, ni",
-            "meaning": "two",
-        },
-        {
-            "title": "一",
-            "reading": "いち, ichi",
-            "meaning": "one",
+            "next_review": "01/26/23"
         }
     ]
 }

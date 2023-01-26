@@ -16,7 +16,7 @@ class ReviewPage(tk.Frame):
         title.pack()
         
         # Card title setup
-        self.current_card_review = self.controller.get_card()
+        self.current_card_review = self.controller.get_current_review()
         self.card_title_label = tk.Label(self,
                                     text= self.current_card_review.get_question(),
                                     pady=20)
@@ -57,7 +57,7 @@ class ReviewPage(tk.Frame):
             messagebox.showinfo(title="Correct answer!", message="Correct answer")
         finally:
             self.clear_entries()
-            self.current_card_review = self.controller.get_card()
+            self.current_card_review = self.controller.get_current_review()
             self.card_title_label.config(text=self.current_card_review.get_question())
             self.card_review_type_label.config(text=self.current_card_review.get_review_type())
             

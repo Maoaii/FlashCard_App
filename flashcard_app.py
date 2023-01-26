@@ -1,6 +1,8 @@
 import json
 import random
 import tkinter as tk
+import datetime
+from datetime import date
 from typing import Dict
 from exceptions.CardAlreadyExistsError import CardAlreadyExistsError
 from exceptions.MissingInfoError import MissingInfoError
@@ -19,6 +21,18 @@ MEANING_REVIEW = "meaning"
 
 class FlashcardApp(tk.Tk):
     def __init__(self, *args, **kwargs) -> None:
+        # TODO: will be using this for the reviews.
+        # TODO: change this to a dictionary
+        today = date.today()
+        self.today_string = today.strftime("%x")
+        self.levels = {
+            1: (today + datetime.timedelta(days=1)).strftime("%x"),
+            2: (today + datetime.timedelta(days=3)).strftime("%x"),
+            3: (today + datetime.timedelta(days=7)).strftime("%x"),
+            4: (today + datetime.timedelta(days=14)).strftime("%x"),
+            5: (today + datetime.timedelta(days=31)).strftime("%x"),
+        }
+        
         # Seed the random generator
         random.seed()
         
@@ -73,7 +87,7 @@ class FlashcardApp(tk.Tk):
             "reading": card_reading,
             "meaning": card_meaning,
             "level": 1,
-            "next_review": 0, # ! This is a timestamp for the next review
+            "next_review": self.levels.get(1), # ! This is a timestamp for the next review
         }
         
         # Read the data content so I can overwrite it with new info
@@ -92,7 +106,7 @@ class FlashcardApp(tk.Tk):
             data = json.load(data_file)
         
         for card in data["cards"]:
-            if card_title in card:
+            if card_title in card.get("title"):
                 return True
         
         return False
@@ -101,12 +115,12 @@ class FlashcardApp(tk.Tk):
     def start_new_review(self):
         # Create a copy of all the cards up for review
         with open(DATA_PATH, "r") as data_file:
-            all_cards = json.load(data_file)["reviews"]
+            all_cards = json.load(data_file)["cards"]
         
         # Create reviews for readings and for meanings
         for card in all_cards:
             # If the card is up for review, create a review for it
-            if card.get("next_review") == 0:
+            if card.get("next_review") == self.today_string:
                 self.current_review.append(
                     CardReview(card.get("title"), card.get(READING_REVIEW), READING_REVIEW))
                 self.current_review.append(
@@ -115,7 +129,7 @@ class FlashcardApp(tk.Tk):
         try:
             self.setup_card()
         except IndexError:
-            # TODO: Gotta figure something out here
+            # TODO: Gotta figure something out here (when there are no cards to review)
             pass
     
         
@@ -147,7 +161,7 @@ class FlashcardApp(tk.Tk):
     def get_current_review(self) -> CardReview:
         return self.current_card_review
 
-
+    # TODO: Implement this
     def update_card_levels(self):
         # Load reviews in file
         
