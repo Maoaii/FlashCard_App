@@ -1,20 +1,12 @@
 {
     "cards": [
         {
-            "title": "に",
-            "type": "Kanji",
-            "reading": "に, ni",
-            "meaning": "two",
-            "level": 1,
-            "next_review": "01/26/23"
-        },
-        {
             "title": "一",
             "type": "Kanji",
-            "reading": "いち, ichi",
+            "reading": "ichi, いち",
             "meaning": "one",
             "level": 1,
-            "next_review": "01/26/23"
+            "next_review": "01/27/23"
         }
     ]
 }

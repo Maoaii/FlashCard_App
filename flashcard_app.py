@@ -2,6 +2,7 @@ import json
 import random
 import tkinter as tk
 import datetime
+from tkinter import messagebox
 from datetime import date
 from typing import Dict
 from exceptions.CardAlreadyExistsError import CardAlreadyExistsError
@@ -72,6 +73,16 @@ class FlashcardApp(tk.Tk):
         # Raise the frame we want to the front
         frame = self.frames[page_name]
         frame.tkraise()
+        
+        if page_name == ReviewPage.__name__:
+            self.start_new_review()
+            
+            if self.current_review == []:
+                self.show_frame(HomePage.__name__)
+                messagebox.showinfo("No cards to review", "You have no cards to review today.")
+                return
+            
+            frame.start_review()
     
     
     def add_card(self, card_title, card_reading, card_meaning, card_type):

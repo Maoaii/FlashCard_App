@@ -15,7 +15,7 @@ class HomePage(tk.Frame):
         # Review button
         reviews_button = tk.Button(self, 
                                    text="Reviews", 
-                                   command= lambda: self.controller.show_frame("ReviewPage"))
+                                   command= lambda: self.start_reviews())
         reviews_button.pack()
         
         # Add new cards button
@@ -30,3 +30,6 @@ class HomePage(tk.Frame):
                                 command= lambda: controller.quit_app())
         quit_button.pack()
         
+    def start_reviews(self):
+        
+        self.controller.show_frame("ReviewPage")
