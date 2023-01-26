@@ -47,6 +47,7 @@ class ReviewPage(tk.Frame):
             self.controller.submit_answer(answer)
         except IndexError:
             messagebox.showerror(title="All answered correctly!", message="All answered correctly!")
+            self.controller.update_card_levels()
             self.back_button_clicked()
         except MissingInfoError:
             messagebox.showerror(title="Please fill out all the entries", message="Please fill out all the entries")

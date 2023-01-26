@@ -1,6 +1,5 @@
 import json
 import random
-import pickle
 import tkinter as tk
 from typing import Dict
 from exceptions.CardAlreadyExistsError import CardAlreadyExistsError
@@ -25,7 +24,7 @@ class FlashcardApp(tk.Tk):
         
         # Set up current cards
         self.current_review: Dict[CardReview] = []
-        self.current_card: CardReview = None
+        self.current_card_review: CardReview = None
         self.start_new_review()
         
         self.window = tk.Tk.__init__(self, *args, **kwargs)
@@ -69,12 +68,12 @@ class FlashcardApp(tk.Tk):
         
         # Create a dict with the info and encode it into json
         card = {
-            card_title: {    
-                "type": card_type,
-                "reading": card_reading,
-                "meaning": card_meaning,
-                "level": 1,
-            }
+            "title": card_title, 
+            "type": card_type,
+            "reading": card_reading,
+            "meaning": card_meaning,
+            "level": 1,
+            "next_review": 0, # ! This is a timestamp for the next review
         }
         
         # Read the data content so I can overwrite it with new info
@@ -101,24 +100,27 @@ class FlashcardApp(tk.Tk):
     
     def start_new_review(self):
         # Create a copy of all the cards up for review
-        # TODO: currently, all cards are up for review
         with open(DATA_PATH, "r") as data_file:
-            all_cards = json.load(data_file)["cards"]
+            all_cards = json.load(data_file)["reviews"]
         
         # Create reviews for readings and for meanings
-        # TODO: There has to be a better way of doing this
         for card in all_cards:
-            card_question = list(card.keys())[0]
-            card_reading = list(card.values())[0][READING_REVIEW]
-            card_meaning = list(card.values())[0][MEANING_REVIEW]
-            self.current_review.append(CardReview(card_question, card_reading, READING_REVIEW))
-            self.current_review.append(CardReview(card_question, card_meaning, MEANING_REVIEW))
+            # If the card is up for review, create a review for it
+            if card.get("next_review") == 0:
+                self.current_review.append(
+                    CardReview(card.get("title"), card.get(READING_REVIEW), READING_REVIEW))
+                self.current_review.append(
+                    CardReview(card.get("title"), card.get(MEANING_REVIEW), MEANING_REVIEW))
         
-        self.setup_card()
+        try:
+            self.setup_card()
+        except IndexError:
+            # TODO: Gotta figure something out here
+            pass
     
         
     def setup_card(self):
-        self.current_card = random.choice(self.current_review)
+        self.current_card_review = random.choice(self.current_review)
     
     
     def submit_answer(self, answer):
@@ -127,23 +129,33 @@ class FlashcardApp(tk.Tk):
         
         if not self.check_answer(answer):
             # Setup new card
-            self.current_card = random.choice(self.current_review)
+            self.setup_card()
             
             raise WrongAnswerError()
         
         # Remove card from deck
-        self.current_review.remove(self.current_card)
+        self.current_review.remove(self.current_card_review)
         
         # Setup new card
         self.setup_card()
         
     
     def check_answer(self, answer: str) -> bool:
-        return answer.casefold() == self.current_card.answer.casefold()
+        return answer.casefold() in self.current_card_review.answer.casefold()
     
     
-    def get_card(self) -> CardReview:
-        return self.current_card
+    def get_current_review(self) -> CardReview:
+        return self.current_card_review
+
+
+    def update_card_levels(self):
+        # Load reviews in file
+        
+        # Check which reviews in current review were answered correctly
+        
+        # Find the corresponding reviews in the file and update their levels
+        
+        pass
     
     
     def quit_app(self):

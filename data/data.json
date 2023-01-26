@@ -1,28 +1,32 @@
 {
     "cards": [
         {
-            "に": {
-                "type": "Kanji",
-                "reading": "に",
-                "meaning": "two",
-                "level": 1
-            }
+            "title": "に",
+            "type": "Kanji",
+            "reading": "に, ni",
+            "meaning": "two",
+            "level": 1,
+            "next_review": 0,
         },
         {
-            "一": {
-                "type": "Kanji",
-                "reading": "いち",
-                "meaning": "one",
-                "level": 1
-            }
+            "title": "一",
+            "type": "Kanji",
+            "reading": "いち, ichi",
+            "meaning": "one",
+            "level": 1,
+            "next_review": 0,
+        }
+    ],
+    "reviews": [
+        {
+            "title": "に",
+            "reading": "に, ni",
+            "meaning": "two",
         },
         {
-            "三": {
-                "type": "Kanji",
-                "reading": "さん",
-                "meaning": "three",
-                "level": 1
-            }
+            "title": "一",
+            "reading": "いち, ichi",
+            "meaning": "one",
         }
     ]
 }
