@@ -20,27 +20,21 @@ DATA_PATH: str = "./data/data.json"
 READING_REVIEW = "reading"
 MEANING_REVIEW = "meaning"
 
+today = date.today()
+TODAY_STRING = today.strftime("%x")
+LEVELS = {
+    1: (today + datetime.timedelta(days=1)).strftime("%x"),
+    2: (today + datetime.timedelta(days=3)).strftime("%x"),
+    3: (today + datetime.timedelta(days=7)).strftime("%x"),
+    4: (today + datetime.timedelta(days=14)).strftime("%x"),
+    5: (today + datetime.timedelta(days=31)).strftime("%x"),
+}
+
 class FlashcardApp(tk.Tk):
     def __init__(self, *args, **kwargs) -> None:
-        # TODO: will be using this for the reviews.
-        # TODO: change this to a dictionary
-        today = date.today()
-        self.today_string = today.strftime("%x")
-        self.levels = {
-            1: (today + datetime.timedelta(days=1)).strftime("%x"),
-            2: (today + datetime.timedelta(days=3)).strftime("%x"),
-            3: (today + datetime.timedelta(days=7)).strftime("%x"),
-            4: (today + datetime.timedelta(days=14)).strftime("%x"),
-            5: (today + datetime.timedelta(days=31)).strftime("%x"),
-        }
         
         # Seed the random generator
         random.seed()
-        
-        # Set up current cards
-        self.current_review: Dict[CardReview] = []
-        self.current_card_review: CardReview = None
-        self.start_new_review()
         
         self.window = tk.Tk.__init__(self, *args, **kwargs)
         
@@ -77,7 +71,7 @@ class FlashcardApp(tk.Tk):
         if page_name == ReviewPage.__name__:
             self.start_new_review()
             
-            if self.current_review == []:
+            if self.current_reviews == []:
                 self.show_frame(HomePage.__name__)
                 messagebox.showinfo("No cards to review", "You have no cards to review today.")
                 return
@@ -98,7 +92,7 @@ class FlashcardApp(tk.Tk):
             "reading": card_reading,
             "meaning": card_meaning,
             "level": 1,
-            "next_review": self.levels.get(1), # ! This is a timestamp for the next review
+            "next_review": LEVELS.get(1), # ! This is a timestamp for the next review
         }
         
         # Read the data content so I can overwrite it with new info
@@ -124,6 +118,10 @@ class FlashcardApp(tk.Tk):
 
     
     def start_new_review(self):
+        self.current_reviews: Dict[CardReview] = []
+        self.answered_reviews: Dict[CardReview] = []
+        self.current_card_review: CardReview = None
+        
         # Create a copy of all the cards up for review
         with open(DATA_PATH, "r") as data_file:
             all_cards = json.load(data_file)["cards"]
@@ -131,57 +129,91 @@ class FlashcardApp(tk.Tk):
         # Create reviews for readings and for meanings
         for card in all_cards:
             # If the card is up for review, create a review for it
-            if card.get("next_review") == self.today_string:
-                self.current_review.append(
-                    CardReview(card.get("title"), card.get(READING_REVIEW), READING_REVIEW))
-                self.current_review.append(
-                    CardReview(card.get("title"), card.get(MEANING_REVIEW), MEANING_REVIEW))
+            if card.get("next_review") == TODAY_STRING:
+                self.current_reviews.append(CardReview(card.get("title"), card.get("reading"), card.get("meaning")))
         
-        try:
-            self.setup_card()
-        except IndexError:
-            # TODO: Gotta figure something out here (when there are no cards to review)
-            pass
+        if all_cards == [] or self.current_reviews == []:
+            return
+        
+        
+        self.setup_card()
     
         
     def setup_card(self):
-        self.current_card_review = random.choice(self.current_review)
+        self.current_card_review = random.choice(self.current_reviews)
     
     
     def submit_answer(self, answer):
         if not answer:
             raise MissingInfoError()
         
-        if not self.check_answer(answer):
+        if not self.answered_correctly(answer):
+            # Update card missed
+            self.current_card_review.missed()
+            
             # Setup new card
             self.setup_card()
             
             raise WrongAnswerError()
         
         # Remove card from deck
-        self.current_review.remove(self.current_card_review)
+        self.current_card_review.answered_correctly()
+        if self.current_card_review.review_done():
+            self.current_reviews.remove(self.current_card_review)
+            self.answered_reviews.append(self.current_card_review)
         
         # Setup new card
         self.setup_card()
         
     
-    def check_answer(self, answer: str) -> bool:
-        return answer.casefold() in self.current_card_review.answer.casefold()
+    def answered_correctly(self, answer: str) -> bool:
+        return answer.casefold() in self.current_card_review.get_answer().casefold()
     
     
     def get_current_review(self) -> CardReview:
         return self.current_card_review
 
-    # TODO: Implement this
+
     def update_card_levels(self):
-        # Load reviews in file
+        with open(DATA_PATH, "r") as data_file:
+            data = json.load(data_file)
+
         
-        # Check which reviews in current review were answered correctly
+        for card in self.answered_reviews:
+            if card.has_missed_review():
+                # level down the card
+                self.level_down_card(card.get_question(), data["cards"])
+            else:
+                # level up the card
+                self.level_up_card(card.get_question(), data["cards"])
+            
         
-        # Find the corresponding reviews in the file and update their levels
-        
-        pass
+        self.update_data_file(data)
     
     
+    def level_up_card(self, card_title, all_cards):
+        for card in all_cards:
+            if card["title"] == card_title:
+                card["level"] += 1
+                if card["level"] > 5:
+                    card["level"] = 5
+                card["next_review"] = LEVELS.get(card["level"])
+    
+    
+    def level_down_card(self, card_title, all_cards):
+        for card in all_cards:
+            if card["title"] == card_title:
+                card["level"] -= 1
+                if card["level"] < 1:
+                    card["level"] = 1
+                card["next_review"] = LEVELS.get(card["level"])
+    
+    
+    def update_data_file(self, data):
+        with open(DATA_PATH, "w") as data_file:
+            json_string = json.dumps(data, ensure_ascii=False, indent=4)
+            data_file.write(json_string)
+            
+
     def quit_app(self):
         self.quit()

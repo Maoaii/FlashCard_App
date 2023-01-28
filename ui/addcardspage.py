@@ -68,6 +68,7 @@ class AddCardsPage(tk.Frame):
             messagebox.showerror(title="Card already exists", message="Card already exists")
         else:
             messagebox.showinfo(title="Card added succesfully!", message="Card added succesfully!")
+            self.clear_entries()
     
     def back_button_clicked(self):
         self.clear_entries()

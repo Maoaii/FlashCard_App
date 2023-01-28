@@ -47,8 +47,6 @@ class ReviewPage(tk.Frame):
         # Set up labels
         self.card_title_label.config(text=self.current_card_review.get_question())
         self.card_review_type_label.config(text=self.current_card_review.get_review_type())
-        
-        pass
     
     
     def submit_answer(self, answer):
@@ -56,7 +54,6 @@ class ReviewPage(tk.Frame):
             self.controller.submit_answer(answer)
         except IndexError:
             messagebox.showerror(title="All answered correctly!", message="All answered correctly!")
-            self.controller.update_card_levels()
             self.back_button_clicked()
         except MissingInfoError:
             messagebox.showerror(title="Please fill out all the entries", message="Please fill out all the entries")
@@ -74,6 +71,7 @@ class ReviewPage(tk.Frame):
     
     def back_button_clicked(self):
         self.clear_entries()
+        self.controller.update_card_levels()
         self.controller.show_frame("HomePage")
         
         
