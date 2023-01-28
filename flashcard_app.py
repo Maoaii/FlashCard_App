@@ -14,6 +14,9 @@ from ui.reviewpage import ReviewPage
 from ui.addcardspage import AddCardsPage
 from card_review import CardReview
 
+SCREEN_WIDTH = 600
+SCREEN_HEIGHT = 500
+
 AVAILABLE_FRAMES = (HomePage, ReviewPage, AddCardsPage)
 APP_NAME: str = "Flashcard App"
 DATA_PATH: str = "./data/data.json"
@@ -41,6 +44,8 @@ class FlashcardApp(tk.Tk):
         # Setting up the window
         self.title(APP_NAME)
         self.config(padx=50, pady=30)
+        self.resizable(False, False)
+        self.center_window()
         
         # Create a container for all the frames
         container = tk.Frame(self)
@@ -77,6 +82,17 @@ class FlashcardApp(tk.Tk):
                 return
             
             frame.start_review()
+
+    
+    def center_window(self):
+        screen_width = self.winfo_screenwidth()
+        screen_height = self.winfo_screenheight()
+        
+        x = (screen_width / 2) - (SCREEN_WIDTH / 2)
+        y = (screen_height / 2) - (SCREEN_HEIGHT / 2)
+        
+        self.geometry("%dx%d+%d+%d" % (SCREEN_WIDTH, SCREEN_HEIGHT, x, y))
+        
     
     
     def add_card(self, card_title, card_reading, card_meaning, card_type):
