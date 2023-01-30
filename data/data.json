@@ -5,24 +5,24 @@
             "type": "Kanji",
             "reading": "ichi, いち",
             "meaning": "one",
-            "level": 1,
-            "next_review": "01/29/23"
+            "level": 2,
+            "next_review": "02/01/23"
         },
         {
             "title": "美味しい",
             "type": "Vocabulary",
             "reading": "おいしい, oishii",
             "meaning": "tasty, delicious",
-            "level": 1,
-            "next_review": "01/29/23"
+            "level": 2,
+            "next_review": "02/01/23"
         },
         {
             "title": "夜",
             "type": "Vocabulary",
             "reading": "よる, yoru",
             "meaning": "night",
-            "level": 1,
-            "next_review": "01/29/23"
+            "level": 2,
+            "next_review": "02/01/23"
         }
     ]
 }
