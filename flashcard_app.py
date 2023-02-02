@@ -18,7 +18,7 @@ SCREEN_WIDTH = 600
 SCREEN_HEIGHT = 500
 
 AVAILABLE_FRAMES = (HomePage, ReviewPage, AddCardsPage)
-APP_NAME: str = "Flashcard App"
+APP_NAME: str = "Janki"
 DATA_PATH: str = "./data/data.json"
 READING_REVIEW = "reading"
 MEANING_REVIEW = "meaning"
