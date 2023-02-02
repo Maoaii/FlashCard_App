@@ -16,14 +16,13 @@ class ReviewPage(tk.Frame):
         title.pack()
         
         # Card title setup
-        self.current_card_review = self.controller.get_card()
         self.card_title_label = tk.Label(self,
-                                    text= self.current_card_review.get_question(),
+                                    text= "XXX",
                                     pady=20)
         self.card_title_label.pack()
         
         # Card review type
-        self.card_review_type_label = tk.Label(self, text=self.current_card_review.get_review_type())
+        self.card_review_type_label = tk.Label(self, text="XXX")
         self.card_review_type_label.pack()
         
         # Card answer setup
@@ -41,13 +40,20 @@ class ReviewPage(tk.Frame):
                                 command= lambda: self.back_button_clicked())
         back_button.pack()
     
+    def start_review(self):
+        # Set up current card
+        self.current_card_review = self.controller.get_current_review()
+        
+        # Set up labels
+        self.card_title_label.config(text=self.current_card_review.get_question())
+        self.card_review_type_label.config(text=self.current_card_review.get_review_type())
+    
     
     def submit_answer(self, answer):
         try:
             self.controller.submit_answer(answer)
         except IndexError:
             messagebox.showerror(title="All answered correctly!", message="All answered correctly!")
-            self.controller.update_card_levels()
             self.back_button_clicked()
         except MissingInfoError:
             messagebox.showerror(title="Please fill out all the entries", message="Please fill out all the entries")
@@ -57,7 +63,7 @@ class ReviewPage(tk.Frame):
             messagebox.showinfo(title="Correct answer!", message="Correct answer")
         finally:
             self.clear_entries()
-            self.current_card_review = self.controller.get_card()
+            self.current_card_review = self.controller.get_current_review()
             self.card_title_label.config(text=self.current_card_review.get_question())
             self.card_review_type_label.config(text=self.current_card_review.get_review_type())
             
@@ -65,6 +71,7 @@ class ReviewPage(tk.Frame):
     
     def back_button_clicked(self):
         self.clear_entries()
+        self.controller.update_card_levels()
         self.controller.show_frame("HomePage")
         
         

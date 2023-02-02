@@ -1,32 +1,28 @@
 {
     "cards": [
         {
-            "title": "に",
-            "type": "Kanji",
-            "reading": "に, ni",
-            "meaning": "two",
-            "level": 1,
-            "next_review": 0,
-        },
-        {
             "title": "一",
             "type": "Kanji",
-            "reading": "いち, ichi",
+            "reading": "ichi, いち",
             "meaning": "one",
-            "level": 1,
-            "next_review": 0,
-        }
-    ],
-    "reviews": [
-        {
-            "title": "に",
-            "reading": "に, ni",
-            "meaning": "two",
+            "level": 2,
+            "next_review": "02/01/23"
         },
         {
-            "title": "一",
-            "reading": "いち, ichi",
-            "meaning": "one",
+            "title": "美味しい",
+            "type": "Vocabulary",
+            "reading": "おいしい, oishii",
+            "meaning": "tasty, delicious",
+            "level": 2,
+            "next_review": "02/01/23"
+        },
+        {
+            "title": "夜",
+            "type": "Vocabulary",
+            "reading": "よる, yoru",
+            "meaning": "night",
+            "level": 2,
+            "next_review": "02/01/23"
         }
     ]
 }
