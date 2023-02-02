@@ -1,14 +1,11 @@
 PYTHON = python3
 
-.PHONY = help 
-
-.DEFAULT_GOAL = help
-
+.PHONY = help run clean setup
 
 help:
 	@echo "---------------HELP-----------------"	
-	@echo "To setup the project type make setup"
-	@echo "To run the project type make run"
+	@echo "To setup the project dependencies, type 'make setup'"
+	@echo "To run the project type 'make run'"
 	@echo "------------------------------------"
 
 setup:
